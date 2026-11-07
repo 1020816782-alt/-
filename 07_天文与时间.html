@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>天文与时间｜古巴比伦数学互动题</title>
+<style>
+:root{--ink:#363630;--brown:#7e5b3a;--gold:#be9149;--pale:#ebe1cd;--green:#4b7d5b;--red:#aa5346;--muted:#777166}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:transparent!important}
+body{font-family:"Microsoft YaHei","PingFang SC",Arial,sans-serif;color:var(--ink);padding:18px}
+.card{width:min(760px,100%);margin:0 auto;padding:clamp(18px,4vw,32px);background:rgba(255,253,247,.88);border:1px solid rgba(190,145,73,.65);border-radius:18px}
+.kicker{font-size:13px;font-weight:700;letter-spacing:2px;color:var(--brown)}
+h1{font-size:clamp(23px,4vw,32px);margin:10px 0 22px}
+.question{font-size:clamp(17px,2.7vw,21px);line-height:1.8;margin-bottom:22px}
+.choices{display:grid;gap:11px}
+button{font:inherit;cursor:pointer;border:1px solid #d7c7a8;border-radius:11px;background:rgba(235,225,205,.92);color:var(--ink);padding:13px 16px;text-align:left}
+button:hover:not(:disabled){border-color:var(--gold);background:rgba(241,231,211,.96)}
+button:disabled{cursor:default;opacity:1}
+.choice.correct{background:rgba(227,238,228,.96);border-color:var(--green)}
+.choice.wrong{background:rgba(244,229,225,.96);border-color:var(--red)}
+.feedback{margin-top:19px;padding:15px;border-radius:11px;line-height:1.8}
+.good{background:rgba(232,240,231,.94);border-left:4px solid var(--green)}
+.try{background:rgba(245,234,228,.94);border-left:4px solid var(--red)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.actions button{min-width:130px;text-align:center}
+.primary{background:var(--brown);color:#fff;border-color:var(--brown)}
+.secondary{background:rgba(255,255,255,.72)}
+.hidden{display:none}
+.small{font-size:12px;color:var(--muted);margin-top:18px}
+</style>
+</head>
+<body>
+<main class="card">
+ <div class="kicker">游戏七 · 知识连线</div>
+ <h1>天文与时间</h1>
+ <div class="question">古巴比伦数学中的六十进制，今天仍能在哪些日常计量中看到明显痕迹？</div>
+ <div class="choices" id="choices"></div>
+ <div id="feedback" class="feedback hidden" aria-live="polite"></div>
+ <div class="actions">
+  <button class="primary hidden" id="retry">重新作答</button>
+  <button class="secondary" id="reset">重置本题</button>
+ </div>
+ <div class="small">选择一个答案查看反馈。页面背景为透明，可嵌入 PPT 或网页容器。</div>
+</main>
+<script>
+const answers=['时间与角度计量', '温度与质量计量', '长度与面积计量'];
+const correct=0;
+const explanation='1 小时 = 60 分钟、1 分钟 = 60 秒，以及角度的分、秒划分，都体现了六十进制传统的长期影响。';
+const choices=document.getElementById('choices');
+const feedback=document.getElementById('feedback');
+const retry=document.getElementById('retry');
+function render(){
+ choices.innerHTML='';feedback.className='feedback hidden';feedback.textContent='';
+ retry.classList.add('hidden');
+ answers.forEach((answer,index)=>{
+  const btn=document.createElement('button');
+  btn.className='choice';
+  btn.textContent=String.fromCharCode(65+index)+'. '+answer;
+  btn.onclick=()=>check(index);
+  choices.appendChild(btn);
+ });
+}
+function check(index){
+ const buttons=[...choices.children];
+ buttons.forEach((btn,i)=>{
+  btn.disabled=true;
+  if(i===correct)btn.classList.add('correct');
+  else if(i===index)btn.classList.add('wrong');
+ });
+ const ok=index===correct;
+ feedback.className='feedback '+(ok?'good':'try');
+ feedback.innerHTML='<strong>'+(ok?'回答正确！':'再想一想！')+'</strong><br>'+explanation;
+ retry.classList.remove('hidden');
+}
+retry.onclick=render;
+document.getElementById('reset').onclick=render;
+render();
+</script>
+</body>
+</html>
